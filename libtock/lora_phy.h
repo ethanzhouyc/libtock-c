@@ -37,6 +37,7 @@ int lora_phy_read_write(const char* write, char* read, size_t len, subscribe_upc
 
 int lora_phy_write_sync(const char* write, size_t len);
 int lora_phy_read_write_sync(const char* write, char* read, size_t len);
+int lora_phy_read_sync(char* read, size_t len);
 
 int lora_phy_gpio_enable_output(GPIO_Pin_t pin);
 int lora_phy_gpio_set(GPIO_Pin_t pin);
