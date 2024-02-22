@@ -109,51 +109,69 @@ void hal_lp_timer_irq_disable( void )
 //     // }
 // }
 
-void hal_lp_timer_init( void )
-{
-    // if( lp_timer_init == false )
-    // {
-    //     lp_timer_init = true;
-    //     rtc_config_1.prescaler = 32; // base tick is 1.007080078125 ms
-    //     nrf_drv_rtc_init( &rtc_1, &rtc_config_1, timer_event_handler );
-    // }
-}
+// void hal_lp_timer_init( void )
+// {
+//     if( lp_timer_init == false )
+//     {
+//         lp_timer_init = true;
+//         rtc_config_1.prescaler = 32; // base tick is 1.007080078125 ms
+//         nrf_drv_rtc_init( &rtc_1, &rtc_config_1, timer_event_handler );
+//     }
+// }
 
-void hal_lp_timer_deinit( void )
-{
-    // if( lp_timer_init == true )
-    // {
-    //     lp_timer_init = false;
-    //     nrf_drv_rtc_uninit( &rtc_1 );
-    // }
-}
+// void hal_lp_timer_deinit( void )
+// {
+//     if( lp_timer_init == true )
+//     {
+//         lp_timer_init = false;
+//         nrf_drv_rtc_uninit( &rtc_1 );
+//     }
+// }
 
 void hal_lp_timer_start( const uint32_t milliseconds, const hal_lp_timer_irq_t* tmr_irq )
 {
-    // hal_lp_timer_init( );
+    delay_ms(milliseconds); // currently all timer changed to delay_ms
+    
+    // // hal_lp_timer_init( );
     // if( milliseconds > 1 )
     // {
-    //     uint32_t time_ticks = 0;
-    //     float time_ticks_f = milliseconds;
-    //     time_ticks_f = time_ticks_f / RTC_1_PER_TICK + 0.5;
-    //     // time_ticks = nrf_drv_rtc_counter_get( &rtc_1 ) + time_ticks_f;
-    //     time_ticks = time_ticks_f;
-    //     nrf_drv_rtc_counter_clear( &rtc_1 );
-    //     nrf_drv_rtc_cc_set( &rtc_1, 0, time_ticks & RTC_1_MAX_TICKS, true );
-    //     lptim_tmr_irq = *tmr_irq;
-    //     nrf_drv_rtc_enable( &rtc_1 );
+    //     uint32_t ticks = 0;
+    //     uint32_t frequency = 0;
+
+    //     alarm_internal_frequency(&frequency);
+    //     ticks = (uint32_t)(((float)milliseconds / 1000) * frequency);
+
+    //     uint32_t current_time = 0;
+    //     alarm_internal_read(&current_time);
+    //     alarm_internal_set(current_time, ticks);
+
+    //     // uint32_t time_ticks = 0;
+    //     // float time_ticks_f = milliseconds;
+    //     // time_ticks_f = time_ticks_f / RTC_1_PER_TICK + 0.5;
+    //     // // time_ticks = nrf_drv_rtc_counter_get( &rtc_1 ) + time_ticks_f;
+    //     // time_ticks = time_ticks_f;
+    //     // nrf_drv_rtc_counter_clear( &rtc_1 );
+    //     // nrf_drv_rtc_cc_set( &rtc_1, 0, time_ticks & RTC_1_MAX_TICKS, true );
+    //     // lptim_tmr_irq = *tmr_irq;
+    //     // nrf_drv_rtc_enable( &rtc_1 );
     // }
     // else // execute immediately
     // {
-    //     if( lptim_tmr_irq.callback != NULL )
-    //     {
-    //         lptim_tmr_irq.callback( lptim_tmr_irq.context );
+    //     if (tmr_irq && tmr_irq->callback) {
+    //         tmr_irq->callback(tmr_irq->context);
     //     }
+        
+    //     // if( lptim_tmr_irq.callback != NULL )
+    //     // {
+    //     //     lptim_tmr_irq.callback( lptim_tmr_irq.context );
+    //     // }
     // }
 }
 
 void hal_lp_timer_stop( void )
 {
+    alarm_internal_stop();
+    
     // if( lp_timer_init == true )
     // {
     //     nrf_drv_rtc_disable( &rtc_1 );

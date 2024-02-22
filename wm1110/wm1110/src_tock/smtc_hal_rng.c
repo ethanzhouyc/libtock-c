@@ -48,16 +48,15 @@ uint32_t hal_rng_get_random( void )
 
     int num_received = 0;
     rng_sync(rng_buff, RANDOM_BUFF_SIZE, RANDOM_BUFF_SIZE, &num_received);
+    return rng_buff[0] << 24 | rng_buff[1] << 16 | rng_buff[2] << 8 | rng_buff[3];
 
-    if(num_received == RANDOM_BUFF_SIZE) {
-        return rng_buff[0] << 24 | rng_buff[1] << 16 | rng_buff[2] << 8 | rng_buff[3];
-    } else {
-        //srand(( unsigned )time( NULL )); ?
-        srand(55);
-        return rand();
-    }
-
-    
+    // if(num_received == RANDOM_BUFF_SIZE) {
+    //     return rng_buff[0] << 24 | rng_buff[1] << 16 | rng_buff[2] << 8 | rng_buff[3];
+    // } else {
+    //     //srand(( unsigned )time( NULL ));
+    //     srand(55);
+    //     return rand();
+    // }
 }
 
 uint32_t hal_rng_get_random_in_range( const uint32_t val_1, const uint32_t val_2 )

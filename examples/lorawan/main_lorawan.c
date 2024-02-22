@@ -223,7 +223,7 @@ int main( void )
     ralf_t* modem_radio = smtc_board_initialise_and_get_ralf( );
 
     /* Disable IRQ to avoid unwanted behaviour during init */
-    hal_mcu_disable_irq( );
+    //hal_mcu_disable_irq( );
 
 
     /* Init board and peripherals */
