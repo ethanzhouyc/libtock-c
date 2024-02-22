@@ -67,7 +67,7 @@
 #include "include/region_us_915_defs.h"
 #include "include/rose.h"
 #include "include/rose_defs.h"
-#include "include/sht41.h"
+//#include "include/sht41.h"
 #include "include/smtc_basic_modem_lr11xx_api_extension.h"
 #include "include/smtc_beacon_sniff.h"
 #include "include/smtc_board.h"
