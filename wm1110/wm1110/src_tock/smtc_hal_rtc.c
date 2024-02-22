@@ -29,12 +29,8 @@ uint32_t hal_rtc_get_time_s( void )
     // double temp = nrf_drv_rtc_counter_get( &rtc_2 ) + rtc_2_tick_diff;
     // return temp * RTC_2_PER_TICK / 1000;
 
-    // uint32_t time = 0;
-    // uint32_t frequency = 0;
-    // alarm_internal_read(&time);
-    // alarm_internal_frequency(&frequency);
-    // uint32_t timeInSeconds = time / frequency;
-    // return timeInSeconds;
+    uint32_t timeInSeconds = hal_rtc_get_time_ms();
+    return timeInSeconds / 1000;
 }
 
 uint32_t hal_rtc_get_time_ms( void )
@@ -42,8 +38,8 @@ uint32_t hal_rtc_get_time_ms( void )
     // double temp = nrf_drv_rtc_counter_get( &rtc_2 ) + rtc_2_tick_diff;
     // return temp * RTC_2_PER_TICK;
 
-    // uint32_t timeInSeconds = hal_rtc_get_time_s();
-    // return timeInSeconds * 1000;
+    uint32_t timeInms = hal_rtc_get_time_100us();
+    return timeInms / 10;
 }
 
 uint32_t hal_rtc_get_time_100us( void )
@@ -51,8 +47,12 @@ uint32_t hal_rtc_get_time_100us( void )
     // double temp = nrf_drv_rtc_counter_get( &rtc_2 ) + rtc_2_tick_diff;
     // return temp * RTC_2_PER_TICK * 10;
     
-    // uint32_t timeInMS = hal_rtc_get_time_ms();
-    // return timeInMS * 10;
+    uint32_t time = 0;
+    uint32_t frequency = 0;
+    alarm_internal_read(&time);
+    alarm_internal_frequency(&frequency);
+    uint32_t timeIn100us = (time * 10000) / frequency;
+    return timeIn100us;
 }
 
 // uint32_t hal_rtc_get_max_ticks( void )
@@ -62,6 +62,8 @@ uint32_t hal_rtc_get_time_100us( void )
 
 void hal_rtc_wakeup_timer_set_ms( const int32_t milliseconds )
 {
+    delay_ms(milliseconds);
+    
     // uint32_t temp = 0;
     // float temp_f = milliseconds;
     // temp_f = temp_f / RTC_2_PER_TICK + 1;

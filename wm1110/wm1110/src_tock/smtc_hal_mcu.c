@@ -29,21 +29,21 @@ void hal_mcu_init( void )
     hal_flash_init( );
     hal_gpio_init( );
     //hal_rtc_init( );
-    hal_lp_timer_init( );
+    //hal_lp_timer_init( );
     //hal_debug_init( );
     hal_spi_init( );
     //hal_rng_init( );
 }
 
-void hal_mcu_disable_irq( void )
-{
-    //__disable_irq();
-}
+// void hal_mcu_disable_irq( void )
+// {
+//     //__disable_irq();
+// }
 
-void hal_mcu_enable_irq( void )
-{
-    //__enable_irq();
-}
+// void hal_mcu_enable_irq( void )
+// {
+//     //__enable_irq();
+// }
 
 void hal_mcu_reset( void )
 {
@@ -58,7 +58,6 @@ void __attribute__( ( optimize( "O0" ) ) ) hal_mcu_wait_us( const int32_t micros
     for( uint32_t i = 0; i < nb_nop; i++ )
     {
         //__NOP( );
-        dummy++;
     }
 }
 void hal_mcu_wait_ms( const int32_t ms )
@@ -78,27 +77,29 @@ void hal_mcu_set_sleep_for_ms( const int32_t milliseconds )
 
     if( milliseconds <= 0 ) return;
 
-    do
-    {
-        int32_t time_sleep = 0;
-        float time_sleep_max = RTC_2_PER_TICK * RTC_2_MAX_TICKS;
-        if( time_counter > time_sleep_max )
-        {
-            time_sleep = time_sleep_max;
-            time_counter -= time_sleep;
-        }
-        else
-        {
-            time_sleep = time_counter;
-            last_sleep_loop = true;
-        }
+    hal_rtc_wakeup_timer_set_ms( milliseconds );
 
-        if( time_sleep > 50 )
-        {
-            hal_rtc_wakeup_timer_set_ms( time_sleep );
-            //nrf_pwr_mgmt_run( );
-        }
-    } while( last_sleep_loop == false );
+    // do
+    // {
+    //     int32_t time_sleep = 0;
+    //     float time_sleep_max = RTC_2_PER_TICK * RTC_2_MAX_TICKS;
+    //     if( time_counter > time_sleep_max )
+    //     {
+    //         time_sleep = time_sleep_max;
+    //         time_counter -= time_sleep;
+    //     }
+    //     else
+    //     {
+    //         time_sleep = time_counter;
+    //         last_sleep_loop = true;
+    //     }
+
+    //     if( time_sleep > 50 )
+    //     {
+    //         hal_rtc_wakeup_timer_set_ms( time_sleep );
+    //         //nrf_pwr_mgmt_run( );
+    //     }
+    // } while( last_sleep_loop == false );
 }
 
 // static char string[HAL_PRINT_BUFFER_SIZE];
