@@ -16,7 +16,5 @@
 #include "smtc_hal_flash.h"
 #include "smtc_hal_watchdog.h"
 #include "smtc_hal_dbg_trace.h"
-#include "sht41.h"
-#include "lis3dh.h"
 
 #endif
