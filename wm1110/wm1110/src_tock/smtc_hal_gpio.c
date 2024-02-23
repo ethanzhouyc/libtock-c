@@ -22,6 +22,14 @@ static bool gpioe_init = false;
 // 	}
 // }
 
+static void tock_gpio_cb (__attribute__ ((unused)) int   pin_num,
+                     __attribute__ ((unused)) int   arg2,
+                     __attribute__ ((unused)) int   arg3,
+                     void* userdata) {
+	hal_gpio_irq_t* irq = (hal_gpio_irq_t*) userdata;
+	irq->callback( irq->context );
+}
+
 void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const hal_gpio_irq_mode_t irq_mode, hal_gpio_irq_t* irq )
 {
 	GPIO_InputMode_t pull_value;
@@ -31,17 +39,17 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 			// pull_value = NRF_GPIO_PIN_NOPULL;
 			pull_value = PullNone;
 			break;
-			
+
 		case HAL_GPIO_PULL_MODE_UP:
 			// pull_value = NRF_GPIO_PIN_PULLUP;
 			pull_value = PullUp;
 			break;
-			
+
 		case HAL_GPIO_PULL_MODE_DOWN:
 			// pull_value = NRF_GPIO_PIN_PULLDOWN;
 			pull_value = PullDown;
 			break;
-			
+
 		default:
 			break;
 	}
@@ -68,33 +76,34 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 				// nrf_drv_gpiote_in_init( pin, &inConfig0, irqCallbackFunc );
 				tock_irq_mode = RisingEdge;
 				break;
-				
+
 			case HAL_GPIO_IRQ_MODE_FALLING:
 				// inConfig1.pull = pull_value;
 				// inConfig1.sense = NRF_GPIOTE_POLARITY_HITOLO;
 				// nrf_drv_gpiote_in_init( pin, &inConfig1, irqCallbackFunc );
 				tock_irq_mode = FallingEdge;
 				break;
-				
+
 			case HAL_GPIO_IRQ_MODE_RISING_FALLING:
 				// inConfig2.pull = pull_value;
 				// inConfig2.sense = NRF_GPIOTE_POLARITY_TOGGLE;
 				// nrf_drv_gpiote_in_init( pin, &inConfig2, irqCallbackFunc );
 				tock_irq_mode = Change;
 				break;
-			
+
 			default:
 				break;
 		}
 
 		lora_phy_gpio_enable_interrupt((GPIO_Pin_t)pin, tock_irq_mode);
-	
+
 		if(( irq != NULL ) && ( irq->callback != NULL ))
 		{
 			// gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
-			lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
+			// lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
+			lora_phy_gpio_interrupt_callback(tock_gpio_cb, irq);
 		}
-		
+
 		// nrf_drv_gpiote_in_event_enable( pin, true );
 	}
 }
@@ -104,7 +113,8 @@ void hal_gpio_irq_attach( const hal_gpio_irq_t* irq )
 	if(( irq != NULL ) && ( irq->callback != NULL ))
 	{
 		// gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
-		lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
+		// lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
+		lora_phy_gpio_interrupt_callback(tock_gpio_cb, irq);
 	}
 }
 
@@ -181,7 +191,7 @@ uint32_t hal_gpio_get_value( uint32_t pin )
 	} else {
 		return HAL_GPIO_RESET;
 	}
-	
+
 	// if( nrf_gpio_pin_read( pin ))
 	// {
 	// 	return HAL_GPIO_SET;
@@ -199,7 +209,7 @@ void hal_gpio_wait_for_state( uint32_t pin, hal_gpio_state_t state )
 	{
 		// while( nrf_gpio_pin_read( pin )) { };
 		while(lora_phy_gpio_read((GPIO_Pin_t)pin, &value)) {
-			
+
 		}
 	}
 	else
@@ -216,10 +226,10 @@ bool hal_gpio_is_pending_irq( uint32_t pin )
 {
 	bool pending = false;
 	uint32_t irq_pending = 0;
-	
+
 	// sd_nvic_GetPendingIRQ( GPIOTE_IRQn, &irq_pending );
 	if( irq_pending ) pending = true;
-	
+
 	return pending;
 }
 
@@ -235,5 +245,5 @@ void hal_gpio_irq_enable( void )
 
 void hal_gpio_irq_disable( void )
 {
-	
+
 }
