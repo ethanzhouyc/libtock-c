@@ -200,7 +200,7 @@ int main( void )
     // lr11xx_system_clear_errors( &radio_context );
 
     printf("start of lorawan app");
-    
+
     static apps_modem_event_callback_t smtc_event_callback = {
         .adr_mobile_to_static  = NULL,
         .alarm                 = on_modem_alarm,
@@ -253,13 +253,16 @@ int main( void )
     while( 1 )
     {
         printf("inside loop\n");
+        // delay_ms(10);
         /* Execute modem runtime, this function must be called again in sleep_time_ms milliseconds or sooner. */
         uint32_t sleep_time_ms = smtc_modem_run_engine( ); // cause process fault
+
+        printf("sleep %i\n", sleep_time_ms);
 
         /* go in low power */
         hal_mcu_set_sleep_for_ms( sleep_time_ms );
 
-        delay_ms(1000);
+        // delay_ms(1000);
     }
 }
 
@@ -285,7 +288,7 @@ static void on_modem_reset( uint16_t reset_count )
 static void on_modem_network_joined( void )
 {
     printf("on_modem_network_joined successful!\n");
-    
+
     ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( APP_TX_DUTYCYCLE ) );
 
     ASSERT_SMTC_MODEM_RC( smtc_modem_adr_set_profile( stack_id, LORAWAN_DEFAULT_DATARATE, adr_custom_list ) );
@@ -298,6 +301,7 @@ static void on_modem_join_fail( void )
 
 static void on_modem_alarm( void )
 {
+    printf("on_modem_alarm\n");
     smtc_modem_status_mask_t modem_status;
     uint32_t                 charge        = 0;
     uint8_t                  app_data_size = 0;
@@ -321,6 +325,7 @@ static void on_modem_alarm( void )
 
 static void on_modem_tx_done( smtc_modem_event_txdone_status_t status )
 {
+    printf("on_modem_tx_done\n");
     static uint32_t uplink_count = 0;
 
     HAL_DBG_TRACE_INFO( "Uplink count: %d\n", ++uplink_count );
@@ -329,6 +334,7 @@ static void on_modem_tx_done( smtc_modem_event_txdone_status_t status )
 static void on_modem_down_data( int8_t rssi, int8_t snr, smtc_modem_event_downdata_window_t rx_window, uint8_t port,
                                 const uint8_t* payload, uint8_t size )
 {
+    printf("on_modem_down_data\n");
     HAL_DBG_TRACE_INFO( "Downlink received:\n" );
     HAL_DBG_TRACE_INFO( "  - LoRaWAN Fport = %d\n", port );
     HAL_DBG_TRACE_INFO( "  - Payload size  = %d\n", size );
@@ -362,6 +368,7 @@ static void on_modem_down_data( int8_t rssi, int8_t snr, smtc_modem_event_downda
 
 static void send_frame( const uint8_t* buffer, const uint8_t length, bool tx_confirmed )
 {
+    printf("send_frame\n");
     uint8_t tx_max_payload;
     int32_t duty_cycle;
 
