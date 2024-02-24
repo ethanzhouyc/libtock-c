@@ -71,6 +71,25 @@ int lora_phy_write(const char* buf,
   return tock_command_return_novalue_to_returncode(cval);
 }
 
+int lora_phy_read(const char* buf,
+                   size_t len,
+                   subscribe_upcall cb, bool* cond) {
+  int ret = 0;
+
+  ret = lora_phy_set_master_read_buffer((const uint8_t*) buf, len);
+  if (ret != RETURNCODE_SUCCESS) {
+    return ret;
+  }
+
+  ret = lora_phy_set_callback(cb, cond);
+  if (ret != RETURNCODE_SUCCESS) {
+    return ret;
+  }
+
+  syscall_return_t cval = command(DRIVER_NUM_LORAPHY_SPI, 2, len, 0);
+  return tock_command_return_novalue_to_returncode(cval);
+}
+
 int lora_phy_read_write(const char* write,
                         char* read,
                         size_t len,
@@ -96,6 +115,22 @@ int lora_phy_write_sync(const char* write,
   }
 
   int err = lora_phy_write(write, len, lora_phy_upcall, &cond);
+  if (err < 0) return err;
+
+  yield_for(&cond);
+  return RETURNCODE_SUCCESS;
+}
+
+int lora_phy_read_sync(char* read, size_t len) {
+  bool cond = false;
+  int ret   = 0;
+
+  ret = lora_phy_set_master_write_buffer(NULL, 0);
+  if (ret != RETURNCODE_SUCCESS) {
+    return ret;
+  }
+
+  int err = lora_phy_read(read, len, lora_phy_upcall, &cond);
   if (err < 0) return err;
 
   yield_for(&cond);
