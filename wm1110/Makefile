@@ -14,7 +14,8 @@ CSRCS := $(wildcard $(WM1110_DIR)/src_seeed/*.c) $(wildcard $(WM1110_DIR)/src_to
 DEPPATH += --dep-path $(WM1110_DIR)/include
 VPATH += :$(WM1110_DIR)/include
 
-override CFLAGS += -I$(WM1110_DIR)/$(WM1110_DIR_NAME)/include -DREGION_US_915 -DRP2_101
+# override CFLAGS += -I$(WM1110_DIR)/$(WM1110_DIR_NAME)/include -DREGION_US_915 -DRP2_101
+override CFLAGS += -I$(WM1110_DIR)/$(WM1110_DIR_NAME)/include -DREGION_US_915 -DRP2_103
 override CFLAGS += -I$(WM1110_DIR)/$(WM1110_DIR_NAME)/include_tock/include
 override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/libtock
 
