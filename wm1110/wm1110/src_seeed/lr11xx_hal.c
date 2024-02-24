@@ -270,42 +270,45 @@ lr11xx_hal_status_t lr11xx_hal_read( const void* context, const uint8_t* command
 
 lr11xx_hal_status_t lr11xx_hal_direct_read( const void* radio, uint8_t* data, const uint16_t data_length )
 {
+    printf("DIRECTRE\n");
     const lr11xx_hal_context_t* lr11xx_context = ( const lr11xx_hal_context_t* ) radio;
 
     lr11xx_hal_check_device_ready( lr11xx_context );
 
-    // Disable IRQ to secure LR11XX concurrent access
-    modem_disable_irq( );
+    // // Disable IRQ to secure LR11XX concurrent access
+    // modem_disable_irq( );
 
-    // Put NSS low to start spi transaction
-    hal_gpio_set_value( lr11xx_context->nss, 0 );
+    // // Put NSS low to start spi transaction
+    // hal_gpio_set_value( lr11xx_context->nss, 0 );
 
-    for( uint16_t i = 0; i < data_length; i++ )
-    {
-        data[i] = hal_spi_in_out( lr11xx_context->spi_id, LR11XX_NOP );
-    }
+    // for( uint16_t i = 0; i < data_length; i++ )
+    // {
+    //     data[i] = hal_spi_in_out( lr11xx_context->spi_id, LR11XX_NOP );
+    // }
 
-#if defined( USE_LR11XX_CRC_OVER_SPI )
-    // read crc sent by lr11xx by sending one more NOP
-    const uint8_t rx_crc = hal_spi_in_out( lr11xx_context->spi_id, LR11XX_NOP );
-#endif
+     lora_phy_read_sync(data, data_length);
 
-    hal_gpio_set_value( lr11xx_context->nss, 1 );
+// #if defined( USE_LR11XX_CRC_OVER_SPI )
+//     // read crc sent by lr11xx by sending one more NOP
+//     const uint8_t rx_crc = hal_spi_in_out( lr11xx_context->spi_id, LR11XX_NOP );
+// #endif
 
-#if defined( USE_LR11XX_CRC_OVER_SPI )
-    // check crc value
-    uint8_t computed_crc = lr11xx_hal_compute_crc( 0xFF, data, data_length );
-    if( rx_crc != computed_crc )
-    {
-        // Re-enable IRQ
-        modem_enable_irq( );
+//     // hal_gpio_set_value( lr11xx_context->nss, 1 );
 
-        return LR11XX_HAL_STATUS_ERROR;
-    }
-#endif
+// #if defined( USE_LR11XX_CRC_OVER_SPI )
+//     // check crc value
+//     uint8_t computed_crc = lr11xx_hal_compute_crc( 0xFF, data, data_length );
+//     if( rx_crc != computed_crc )
+//     {
+//         // Re-enable IRQ
+//         modem_enable_irq( );
 
-    // Re-enable IRQ
-    modem_enable_irq( );
+//         return LR11XX_HAL_STATUS_ERROR;
+//     }
+// #endif
+
+//     // Re-enable IRQ
+//     modem_enable_irq( );
 
     return LR11XX_HAL_STATUS_OK;
 }
