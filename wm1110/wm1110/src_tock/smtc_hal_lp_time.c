@@ -88,13 +88,14 @@ void hal_lp_timer_irq_disable( void )
 //#include "nrf_drv_rtc.h"
 //#include "nrf_drv_clock.h"
 #include "smtc_hal_lp_time.h"
+#include <timer.h>
 
 #define RTC_1_MAX_TICKS	0xffffff
 #define RTC_1_PER_TICK	1.007080078125
 
 // static const nrf_drv_rtc_t rtc_1 = NRF_DRV_RTC_INSTANCE( 1 );
 // static nrf_drv_rtc_config_t rtc_config_1 = NRF_DRV_RTC_DEFAULT_CONFIG;
-// static hal_lp_timer_irq_t lptim_tmr_irq = { .context = NULL, .callback = NULL };
+static hal_lp_timer_irq_t lptim_tmr_irq = { .context = NULL, .callback = NULL };
 
 // static bool lp_timer_init = false;
 // static uint32_t lp_timer_old_slot = 0;
@@ -108,6 +109,18 @@ void hal_lp_timer_irq_disable( void )
 //     //     lptim_tmr_irq.callback( lptim_tmr_irq.context );
 //     // }
 // }
+
+static void timer_tock_upcall(__attribute__ ((unused)) int unused0,
+                         __attribute__ ((unused)) int unused1,
+                         __attribute__ ((unused)) int unused2,
+                         __attribute__ ((unused)) void* ud) {
+    printf("ttu\n");
+    if( lptim_tmr_irq.callback != NULL )
+    {
+        lptim_tmr_irq.callback( lptim_tmr_irq.context );
+    }
+
+}
 
 // void hal_lp_timer_init( void )
 // {
@@ -130,11 +143,11 @@ void hal_lp_timer_irq_disable( void )
 
 void hal_lp_timer_start( const uint32_t milliseconds, const hal_lp_timer_irq_t* tmr_irq )
 {
-    delay_ms(milliseconds); // currently all timer changed to delay_ms
-    
+    // delay_ms(milliseconds); // currently all timer changed to delay_ms
+
     // // hal_lp_timer_init( );
-    // if( milliseconds > 1 )
-    // {
+    if( milliseconds > 1 )
+    {
     //     uint32_t ticks = 0;
     //     uint32_t frequency = 0;
 
@@ -152,26 +165,37 @@ void hal_lp_timer_start( const uint32_t milliseconds, const hal_lp_timer_irq_t* 
     //     // time_ticks = time_ticks_f;
     //     // nrf_drv_rtc_counter_clear( &rtc_1 );
     //     // nrf_drv_rtc_cc_set( &rtc_1, 0, time_ticks & RTC_1_MAX_TICKS, true );
-    //     // lptim_tmr_irq = *tmr_irq;
+
     //     // nrf_drv_rtc_enable( &rtc_1 );
-    // }
-    // else // execute immediately
-    // {
+
+
+        // lptim_tmr_irq = *tmr_irq;
+        //   bool cond = false;
+        //   tock_timer_t timer;
+
+        //   timer_in(milliseconds, timer_tock_upcall, &cond, &timer);
+
+          delay_ms(milliseconds);
+          tmr_irq->callback(tmr_irq->context);
+
+    }
+    else // execute immediately
+    {
     //     if (tmr_irq && tmr_irq->callback) {
-    //         tmr_irq->callback(tmr_irq->context);
+            tmr_irq->callback(tmr_irq->context);
     //     }
-        
+
     //     // if( lptim_tmr_irq.callback != NULL )
     //     // {
-    //     //     lptim_tmr_irq.callback( lptim_tmr_irq.context );
+            // lptim_tmr_irq.callback( lptim_tmr_irq.context );
     //     // }
-    // }
+    }
 }
 
 void hal_lp_timer_stop( void )
 {
     alarm_internal_stop();
-    
+
     // if( lp_timer_init == true )
     // {
     //     nrf_drv_rtc_disable( &rtc_1 );

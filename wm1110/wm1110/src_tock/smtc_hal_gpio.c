@@ -22,16 +22,32 @@ static bool gpioe_init = false;
 // 	}
 // }
 
-static void tock_gpio_cb (__attribute__ ((unused)) int   pin_num,
+struct gpio_result {
+	bool fired;
+	hal_gpio_irq_t* irq;
+};
+
+static struct gpio_result result;
+
+static void tock_gpio_cb ( int   pin_num,
                      __attribute__ ((unused)) int   arg2,
                      __attribute__ ((unused)) int   arg3,
-                     void* userdata) {
-	hal_gpio_irq_t* irq = (hal_gpio_irq_t*) userdata;
-	irq->callback( irq->context );
+                    __attribute__ ((unused))  void* userdata) {
+	printf("gcb %i\n", pin_num);
+	hal_gpio_irq_t* irq = gpio_irq[pin_num];
+	irq->callback(irq->context);
+
+	// result.fired = true;
+	// result.irq = (hal_gpio_irq_t*) userdata;
+
+
+
+
+
 }
 
 void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const hal_gpio_irq_mode_t irq_mode, hal_gpio_irq_t* irq )
-{
+{printf("hal_gpio_init_in\n");
 	GPIO_InputMode_t pull_value;
 	switch( pull_mode )
 	{
@@ -99,10 +115,18 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 
 		if(( irq != NULL ) && ( irq->callback != NULL ))
 		{
-			// gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
+			gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
+			printf("irq %i\n",(irq->pin) & ( GPIO_IRQ_MAX - 1 ));
 			// lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
-			lora_phy_gpio_interrupt_callback(tock_gpio_cb, irq);
+			result.fired = false;
+
+
+			// yield_for(&result.fired);
+			// printf("gcb\n");
+			// result.irq->callback(result.irq->context);
 		}
+
+		lora_phy_gpio_interrupt_callback(tock_gpio_cb, irq);
 
 		// nrf_drv_gpiote_in_event_enable( pin, true );
 	}
@@ -110,20 +134,22 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 
 void hal_gpio_irq_attach( const hal_gpio_irq_t* irq )
 {
+	printf("hal_gpio_irq_attach %i\n",(irq->pin) & ( GPIO_IRQ_MAX - 1 ));
 	if(( irq != NULL ) && ( irq->callback != NULL ))
 	{
-		// gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
+		gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
 		// lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
-		lora_phy_gpio_interrupt_callback(tock_gpio_cb, irq);
+		// lora_phy_gpio_interrupt_callback(tock_gpio_cb, irq);
 	}
 }
 
 void hal_gpio_irq_deatach( const hal_gpio_irq_t* irq )
 {
+	printf("hal_gpio_irq_deatach\n");
 	if( irq != NULL )
 	{
-		// gpio_irq[(irq->pin) & GPIO_IRQ_MAX] = NULL;
-		lora_phy_gpio_disable_interrupt((GPIO_Pin_t)(irq->pin));
+		gpio_irq[(irq->pin) & GPIO_IRQ_MAX] = NULL;
+		// lora_phy_gpio_disable_interrupt((GPIO_Pin_t)(irq->pin));
 	}
 }
 
