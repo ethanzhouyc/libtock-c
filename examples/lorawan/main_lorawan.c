@@ -197,7 +197,30 @@ int main( void )
 
     // lr11xx_hal_reset(&radio_context);
 
-    // lr11xx_system_clear_errors( &radio_context );
+    lr11xx_system_clear_errors( &radio_context );
+
+    lr11xx_status_t status;
+    lr11xx_system_version_t version;
+    status = lr11xx_system_get_version( &radio_context, &version );
+    printf("Hardware Version: %u, 0x%04X\n", version.hw, version.hw);  // 4
+    printf("Type: %u, 0x%04X\n", version.type, version.type); // 4
+    printf("Firmware Version: %u, 0x%04X\n", version.fw, version.fw); // 1028, 0x0404
+    if( status != LR11XX_STATUS_OK )
+    {
+        printf( "Failed to get LR11XX firmware version\n" );
+    }
+    // if( ( ( version.fw != LR1110_FW_VERSION ) && ( version.type = LR1110_FW_TYPE ) ) &&
+    //     ( ( version.fw != LR1120_FW_VERSION ) && ( version.type = LR1120_FW_TYPE ) ) )
+    // {
+    //     printf( "Wrong LR11XX firmware version, expected 0x%04X, got 0x%04X\n", LR1110_FW_VERSION,
+    //                          version.fw );
+    // }
+
+    lr11xx_system_uid_t unique_identifier;
+    status= lr11xx_system_read_uid( &radio_context, &unique_identifier );
+
+    printf("uid %x %x %x\n", unique_identifier[0], unique_identifier[1], unique_identifier[2]);
+
 
     printf("start of lorawan app");
 
@@ -250,8 +273,12 @@ int main( void )
     /* Configure the partial low power mode */
     // hal_mcu_partial_sleep_enable( APP_PARTIAL_SLEEP ); // smtc function implementation is empty
 
+    lr11xx_system_clear_errors( &radio_context );
+    lr11xx_system_clear_irq_status(&radio_context, 0xFFFFFFFF);
+
     while( 1 )
     {
+        lr11xx_system_clear_errors( &radio_context );
         printf("inside loop\n");
         // delay_ms(10);
         /* Execute modem runtime, this function must be called again in sleep_time_ms milliseconds or sooner. */
