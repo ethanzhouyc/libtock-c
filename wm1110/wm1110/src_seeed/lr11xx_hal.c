@@ -125,6 +125,7 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
     modem_disable_irq( );
 
 
+    uint8_t rbuffer[100];
     uint8_t wbuffer[100];
 
     int write_length = command_length+data_length;
@@ -132,13 +133,17 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
     memcpy(wbuffer, command, command_length);
     memcpy(wbuffer+command_length, data, data_length);
 
+    printf("spi write: command 0x%02x 0x%02x\n", command[0], command[1]);
+
+
+
 #if defined( USE_LR11XX_CRC_OVER_SPI )
     // Send the CRC byte at the end of the transaction
     wbuffer[write_length] = cmd_crc;
     write_length += 1;
 #endif
 
-    lora_phy_write_sync((const char*)wbuffer,  write_length);
+    lora_phy_read_write_sync((const char*)wbuffer, (const char*)rbuffer,  write_length);
 
     // LR11XX_SYSTEM_SET_SLEEP_OC=0x011B opcode. In sleep mode the radio busy line is held at 1 => do not test it
     if( ( command[0] == 0x01 ) && ( command[1] == 0x1B ) )
@@ -151,6 +156,9 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
         //
         hal_spi_deinit( );
     }
+
+    printf("spi write: read 0x%02x 0x%02x\n", rbuffer[0], rbuffer[1]);
+
 
     // Re-enable IRQ
     modem_enable_irq( );
@@ -286,7 +294,12 @@ lr11xx_hal_status_t lr11xx_hal_direct_read( const void* radio, uint8_t* data, co
     //     data[i] = hal_spi_in_out( lr11xx_context->spi_id, LR11XX_NOP );
     // }
 
-     lora_phy_read_sync(data, data_length);
+    uint8_t wbuffer[100];
+
+    memset(wbuffer, 0, sizeof(wbuffer));
+    wbuffer[0] = 0x01;
+
+     lora_phy_read_write_sync( wbuffer,data,data_length);
 
 // #if defined( USE_LR11XX_CRC_OVER_SPI )
 //     // read crc sent by lr11xx by sending one more NOP
@@ -309,6 +322,12 @@ lr11xx_hal_status_t lr11xx_hal_direct_read( const void* radio, uint8_t* data, co
 
 //     // Re-enable IRQ
 //     modem_enable_irq( );
+
+     printf("read: 0x ");
+     for (int i=0; i<data_length; i++ ) {
+        printf("%02x ", data[i]);
+     }
+     printf("\n");
 
     return LR11XX_HAL_STATUS_OK;
 }
