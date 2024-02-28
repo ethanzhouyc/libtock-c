@@ -111,6 +111,7 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 				break;
 		}
 
+		lora_phy_gpio_enable_input((GPIO_Pin_t)pin, pull_value);
 		lora_phy_gpio_enable_interrupt((GPIO_Pin_t)pin, tock_irq_mode);
 
 		if(( irq != NULL ) && ( irq->callback != NULL ))
