@@ -253,7 +253,7 @@ smtc_modem_event_user_radio_access_status_t convert_rp_to_user_radio_access_stat
 
 void smtc_modem_init( const ralf_t* radio, void ( *callback_event )( void ) )
 {
-    printf("start of smtc_modem_init\n");
+    // printf("start of smtc_modem_init\n");
     SMTC_MODEM_HAL_TRACE_INFO( "Modem Initialization\n" );
 
 #ifdef LORAWAN_BYPASS_ENABLED
@@ -293,7 +293,7 @@ void smtc_modem_init( const ralf_t* radio, void ( *callback_event )( void ) )
 #endif  // !LR1110_MODEM_E
     modem_supervisor_init( callback_event, &modem_radio_planner, &smtc_modem_services_ctx ); // cause process fault
     smtc_secure_element_init( );
-    printf("end of smtc_modem_init\n");
+    // printf("end of smtc_modem_init\n");
 }
 
 uint32_t smtc_modem_run_engine( void )

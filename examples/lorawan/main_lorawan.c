@@ -199,16 +199,16 @@ int main( void )
 
     lr11xx_system_clear_errors( &radio_context );
 
-    lr11xx_status_t status;
-    lr11xx_system_version_t version;
-    status = lr11xx_system_get_version( &radio_context, &version );
-    printf("Hardware Version: %u, 0x%04X\n", version.hw, version.hw);  // 4
-    printf("Type: %u, 0x%04X\n", version.type, version.type); // 4
-    printf("Firmware Version: %u, 0x%04X\n", version.fw, version.fw); // 1028, 0x0404
-    if( status != LR11XX_STATUS_OK )
-    {
-        printf( "Failed to get LR11XX firmware version\n" );
-    }
+    // lr11xx_status_t status;
+    // lr11xx_system_version_t version;
+    // status = lr11xx_system_get_version( &radio_context, &version );
+    // printf("Hardware Version: %u, 0x%04X\n", version.hw, version.hw);  // 4
+    // printf("Type: %u, 0x%04X\n", version.type, version.type); // 4
+    // printf("Firmware Version: %u, 0x%04X\n", version.fw, version.fw); // 1028, 0x0404
+    // if( status != LR11XX_STATUS_OK )
+    // {
+    //     printf( "Failed to get LR11XX firmware version\n" );
+    // }
     // if( ( ( version.fw != LR1110_FW_VERSION ) && ( version.type = LR1110_FW_TYPE ) ) &&
     //     ( ( version.fw != LR1120_FW_VERSION ) && ( version.type = LR1120_FW_TYPE ) ) )
     // {
@@ -216,13 +216,13 @@ int main( void )
     //                          version.fw );
     // }
 
-    lr11xx_system_uid_t unique_identifier;
-    status= lr11xx_system_read_uid( &radio_context, &unique_identifier );
+    // lr11xx_system_uid_t unique_identifier;
+    // status= lr11xx_system_read_uid( &radio_context, &unique_identifier );
 
-    printf("uid %x %x %x\n", unique_identifier[0], unique_identifier[1], unique_identifier[2]);
+    // printf("uid %x %x %x\n", unique_identifier[0], unique_identifier[1], unique_identifier[2]);
 
 
-    printf("start of lorawan app");
+    // printf("start of lorawan app");
 
     static apps_modem_event_callback_t smtc_event_callback = {
         .adr_mobile_to_static  = NULL,
@@ -279,12 +279,12 @@ int main( void )
     while( 1 )
     {
         lr11xx_system_clear_errors( &radio_context );
-        printf("inside loop\n");
+        // printf("inside loop\n");
         // delay_ms(10);
         /* Execute modem runtime, this function must be called again in sleep_time_ms milliseconds or sooner. */
         uint32_t sleep_time_ms = smtc_modem_run_engine( ); // cause process fault
 
-        printf("sleep %i\n", sleep_time_ms);
+        // printf("sleep %i\n", sleep_time_ms);
 
         /* go in low power */
         hal_mcu_set_sleep_for_ms( sleep_time_ms );
@@ -300,7 +300,7 @@ int main( void )
 
 static void on_modem_reset( uint16_t reset_count )
 {
-    printf("on_modem_reset\n");
+    // printf("on_modem_reset\n");
 
     HAL_DBG_TRACE_INFO( "Application parameters:\n" );
     HAL_DBG_TRACE_INFO( "  - LoRaWAN uplink Fport = %d\n", LORAWAN_APP_PORT );
@@ -422,7 +422,7 @@ static void send_frame( const uint8_t* buffer, const uint8_t length, bool tx_con
 
 void apps_modem_common_configure_lorawan_params( uint8_t stack_id )
 {
-    printf("apps_modem_common_configure_lorawan_params\n");
+    // printf("apps_modem_common_configure_lorawan_params\n");
 
     smtc_modem_return_code_t rc = SMTC_MODEM_RC_OK;
     uint8_t dev_eui[8] = { 0 };

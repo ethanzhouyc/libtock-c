@@ -133,7 +133,7 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
     memcpy(wbuffer, command, command_length);
     memcpy(wbuffer+command_length, data, data_length);
 
-    printf("spi write: command 0x%02x 0x%02x\n", command[0], command[1]);
+    // printf("spi write: command 0x%02x 0x%02x\n", command[0], command[1]);
 
 
 
@@ -157,7 +157,7 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
         hal_spi_deinit( );
     }
 
-    printf("spi write: read 0x%02x 0x%02x\n", rbuffer[0], rbuffer[1]);
+    // printf("spi write: read 0x%02x 0x%02x\n", rbuffer[0], rbuffer[1]);
 
 
     // Re-enable IRQ
@@ -191,7 +191,7 @@ lr11xx_hal_status_t lr11xx_hal_read( const void* context, const uint8_t* command
     bool int_pending = rbuffer[0] & 0x1;
     uint8_t stat1 = (rbuffer[0] >> 1) & 0x7;
 
-    printf("resp intpend: %i, stat1: %i\n", int_pending, stat1);
+    // printf("resp intpend: %i, stat1: %i\n", int_pending, stat1);
 
 
 
@@ -278,7 +278,7 @@ lr11xx_hal_status_t lr11xx_hal_read( const void* context, const uint8_t* command
 
 lr11xx_hal_status_t lr11xx_hal_direct_read( const void* radio, uint8_t* data, const uint16_t data_length )
 {
-    printf("DIRECTRE\n");
+    // printf("DIRECTRE\n");
     const lr11xx_hal_context_t* lr11xx_context = ( const lr11xx_hal_context_t* ) radio;
 
     lr11xx_hal_check_device_ready( lr11xx_context );
@@ -323,11 +323,11 @@ lr11xx_hal_status_t lr11xx_hal_direct_read( const void* radio, uint8_t* data, co
 //     // Re-enable IRQ
 //     modem_enable_irq( );
 
-     printf("read: 0x ");
-     for (int i=0; i<data_length; i++ ) {
-        printf("%02x ", data[i]);
-     }
-     printf("\n");
+    //  printf("read: 0x ");
+    //  for (int i=0; i<data_length; i++ ) {
+    //     printf("%02x ", data[i]);
+    //  }
+    //  printf("\n");
 
     return LR11XX_HAL_STATUS_OK;
 }
@@ -369,7 +369,7 @@ static void lr11xx_hal_wait_on_busy( const uint32_t busy_pin )
         cnt ++;
         if( cnt >= 3000 )
         {
-            printf( "lr1110_hal_wait_on_busy\r\n" );
+            // printf( "lr1110_hal_wait_on_busy\r\n" );
             break;
         }
     };

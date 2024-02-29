@@ -33,7 +33,7 @@ static void tock_gpio_cb ( int   pin_num,
                      __attribute__ ((unused)) int   arg2,
                      __attribute__ ((unused)) int   arg3,
                     __attribute__ ((unused))  void* userdata) {
-	printf("gcb %i\n", pin_num);
+	// printf("gcb %i\n", pin_num);
 	hal_gpio_irq_t* irq = gpio_irq[pin_num];
 	irq->callback(irq->context);
 
@@ -47,7 +47,7 @@ static void tock_gpio_cb ( int   pin_num,
 }
 
 void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const hal_gpio_irq_mode_t irq_mode, hal_gpio_irq_t* irq )
-{printf("hal_gpio_init_in\n");
+{// printf("hal_gpio_init_in\n");
 	GPIO_InputMode_t pull_value;
 	switch( pull_mode )
 	{
@@ -117,7 +117,7 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 		if(( irq != NULL ) && ( irq->callback != NULL ))
 		{
 			gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
-			printf("irq %i\n",(irq->pin) & ( GPIO_IRQ_MAX - 1 ));
+			// printf("irq %i\n",(irq->pin) & ( GPIO_IRQ_MAX - 1 ));
 			// lora_phy_gpio_interrupt_callback(irq->callback, irq->context);
 			result.fired = false;
 
@@ -135,7 +135,7 @@ void hal_gpio_init_in( uint32_t pin, const hal_gpio_pull_mode_t pull_mode, const
 
 void hal_gpio_irq_attach( const hal_gpio_irq_t* irq )
 {
-	printf("hal_gpio_irq_attach %i\n",(irq->pin) & ( GPIO_IRQ_MAX - 1 ));
+	// printf("hal_gpio_irq_attach %i\n",(irq->pin) & ( GPIO_IRQ_MAX - 1 ));
 	if(( irq != NULL ) && ( irq->callback != NULL ))
 	{
 		gpio_irq[(irq->pin) & ( GPIO_IRQ_MAX - 1 )] = irq;
@@ -146,7 +146,7 @@ void hal_gpio_irq_attach( const hal_gpio_irq_t* irq )
 
 void hal_gpio_irq_deatach( const hal_gpio_irq_t* irq )
 {
-	printf("hal_gpio_irq_deatach\n");
+	// printf("hal_gpio_irq_deatach\n");
 	if( irq != NULL )
 	{
 		gpio_irq[(irq->pin) & GPIO_IRQ_MAX] = NULL;
