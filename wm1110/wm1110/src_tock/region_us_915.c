@@ -164,7 +164,7 @@ void region_us_915_config( lr1_stack_mac_t* lr1_mac )
 void region_us_915_init( lr1_stack_mac_t* lr1_mac )
 {
     // Tx 125 kHz channels
-    for( uint8_t i = 0; i < NUMBER_OF_TX_CHANNEL_US_915 - 8; i++ )
+    for( uint8_t i = 8; i < 15; i++ )
     {
         SMTC_PUT_BIT8( channel_index_enabled, i, CHANNEL_ENABLED );
 
