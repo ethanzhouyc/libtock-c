@@ -276,10 +276,12 @@ int main( void )
     lr11xx_system_clear_errors( &radio_context );
     lr11xx_system_clear_irq_status(&radio_context, 0xFFFFFFFF);
 
+    printf("inside loop\n");
+    
     while( 1 )
     {
         lr11xx_system_clear_errors( &radio_context );
-        // printf("inside loop\n");
+        
         // delay_ms(10);
         /* Execute modem runtime, this function must be called again in sleep_time_ms milliseconds or sooner. */
         uint32_t sleep_time_ms = smtc_modem_run_engine( ); // cause process fault
@@ -300,7 +302,7 @@ int main( void )
 
 static void on_modem_reset( uint16_t reset_count )
 {
-    // printf("on_modem_reset\n");
+    printf("on_modem_reset\n");
 
     HAL_DBG_TRACE_INFO( "Application parameters:\n" );
     HAL_DBG_TRACE_INFO( "  - LoRaWAN uplink Fport = %d\n", LORAWAN_APP_PORT );
@@ -422,7 +424,7 @@ static void send_frame( const uint8_t* buffer, const uint8_t length, bool tx_con
 
 void apps_modem_common_configure_lorawan_params( uint8_t stack_id )
 {
-    // printf("apps_modem_common_configure_lorawan_params\n");
+    printf("apps_modem_common_configure_lorawan_params\n");
 
     smtc_modem_return_code_t rc = SMTC_MODEM_RC_OK;
     uint8_t dev_eui[8] = { 0 };
