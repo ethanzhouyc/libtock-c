@@ -60,7 +60,7 @@ extern "C" {
 /*!
  * @brief Defines the application data transmission duty cycle. 60s, value in [s].
  */
-#define APP_TX_DUTYCYCLE 60
+#define APP_TX_DUTYCYCLE 3
 
 /*!
  * @brief LoRaWAN application port
@@ -86,7 +86,7 @@ extern "C" {
 /*!
  * @brief LoRaWAN confirmed messages
  */
-#define LORAWAN_CONFIRMED_MSG_ON false
+#define LORAWAN_CONFIRMED_MSG_ON true
 
 /*!
  * @brief Default datarate

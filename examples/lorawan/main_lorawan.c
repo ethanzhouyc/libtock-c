@@ -199,12 +199,12 @@ int main( void )
 
     lr11xx_system_clear_errors( &radio_context );
 
-    // lr11xx_status_t status;
-    // lr11xx_system_version_t version;
-    // status = lr11xx_system_get_version( &radio_context, &version );
-    // printf("Hardware Version: %u, 0x%04X\n", version.hw, version.hw);  // 4
-    // printf("Type: %u, 0x%04X\n", version.type, version.type); // 4
-    // printf("Firmware Version: %u, 0x%04X\n", version.fw, version.fw); // 1028, 0x0404
+    lr11xx_status_t status;
+    lr11xx_system_version_t version;
+    status = lr11xx_system_get_version( &radio_context, &version );
+    printf("Hardware Version: %u, 0x%04X\n", version.hw, version.hw);
+    printf("Type: %u, 0x%04X\n", version.type, version.type);
+    printf("Firmware Version: %u, 0x%04X\n", version.fw, version.fw);
     // if( status != LR11XX_STATUS_OK )
     // {
     //     printf( "Failed to get LR11XX firmware version\n" );
@@ -216,13 +216,13 @@ int main( void )
     //                          version.fw );
     // }
 
-    // lr11xx_system_uid_t unique_identifier;
-    // status= lr11xx_system_read_uid( &radio_context, &unique_identifier );
+    lr11xx_system_uid_t unique_identifier;
+    status= lr11xx_system_read_uid( &radio_context, &unique_identifier );
 
-    // printf("uid %x %x %x\n", unique_identifier[0], unique_identifier[1], unique_identifier[2]);
+    printf("uid %x %x %x\n", unique_identifier[0], unique_identifier[1], unique_identifier[2]);
 
 
-    // printf("start of lorawan app");
+    printf("start of lorawan app\n");
 
     static apps_modem_event_callback_t smtc_event_callback = {
         .adr_mobile_to_static  = NULL,
