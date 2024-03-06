@@ -56,6 +56,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <humidity.h>
+#include <temperature.h>
+#include <timer.h>
+
 /*
  * -----------------------------------------------------------------------------
  * --- PRIVATE MACROS-----------------------------------------------------------
@@ -332,7 +336,7 @@ static void on_modem_alarm( void )
 {
     printf("on_modem_alarm\n");
     smtc_modem_status_mask_t modem_status;
-    uint32_t                 charge        = 0;
+    // uint32_t                 charge        = 0;
     uint8_t                  app_data_size = 0;
 
     /* Schedule next packet transmission */
@@ -342,12 +346,32 @@ static void on_modem_alarm( void )
     ASSERT_SMTC_MODEM_RC( smtc_modem_get_status( stack_id, &modem_status ) );
     modem_status_to_string( modem_status );
 
-    ASSERT_SMTC_MODEM_RC( smtc_modem_get_charge( &charge ) );
+    // ASSERT_SMTC_MODEM_RC( smtc_modem_get_charge( &charge ) );
 
-    app_data_buffer[app_data_size++] = ( uint8_t ) ( charge );
-    app_data_buffer[app_data_size++] = ( uint8_t ) ( charge >> 8 );
-    app_data_buffer[app_data_size++] = ( uint8_t ) ( charge >> 16 );
-    app_data_buffer[app_data_size++] = ( uint8_t ) ( charge >> 24 );
+    printf("[Sensors] Sampling Temperature and Humidity sensors once.\n");
+
+    bool temperature_available    = driver_exists(DRIVER_NUM_TEMPERATURE);
+    bool humidity_available       = driver_exists(DRIVER_NUM_HUMIDITY);
+    int temp = 0;
+    unsigned humi = 0;
+    if (temperature_available) {
+        temperature_read_sync(&temp);
+        printf("Temperature: %d.%d deg C, send %d to TTN\n", temp / 100, temp % 100, temp);
+    } else {
+        printf("Temperature sensor not available.\n");
+    }
+
+    if (humidity_available) {
+        humidity_read_sync(&humi);
+        printf("Humidity: %d.%d%%, send %d to TTN\n", humi / 100, humi % 100, humi);
+    } else {
+        printf("Humidity sensor not available.\n");
+    }
+
+    app_data_buffer[app_data_size++] = (uint8_t)((temp >> 8) & 0xFF);
+    app_data_buffer[app_data_size++] = (uint8_t)(temp & 0xFF);
+    app_data_buffer[app_data_size++] = (uint8_t)((humi >> 8) & 0xFF);
+    app_data_buffer[app_data_size++] = (uint8_t)(humi & 0xFF);
 
     send_frame( app_data_buffer, app_data_size, LORAWAN_CONFIRMED_MSG_ON );
 }
