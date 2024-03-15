@@ -638,6 +638,7 @@ void lr1_stack_mac_rp_callback( lr1_stack_mac_t* lr1_mac )
         if( lr1_stack_mac_downlink_check_under_it( lr1_mac ) != OKLORAWAN )
         {  // Case receive a packet but it isn't a valid packet
             SMTC_MODEM_HAL_TRACE_MSG( "Receive a packet But rejected and too late to restart\n" );
+            printf( "Receive a packet But rejected and too late to restart\n" );
             lr1_mac->planner_status  = RP_STATUS_RX_TIMEOUT;
             lr1_mac->rx_payload_size = 0;
         }
@@ -648,6 +649,7 @@ void lr1_stack_mac_rp_callback( lr1_stack_mac_t* lr1_mac )
         break;
 
     case RP_STATUS_RX_TIMEOUT: {
+        printf("RP_STATUS_RX_TIMEOUT lr1_stack_mac_layer.c\n");
 #ifndef BSP_LR1MAC_DISABLE_FINE_TUNE
         uint32_t rx_timestamp_calibration = tcurrent_ms;
         uint32_t rx_delay_ms;

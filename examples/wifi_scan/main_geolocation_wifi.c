@@ -96,7 +96,7 @@
 /*!
  * @brief Defines the delay before starting a new Wi-Fi scan, value in [s].
  */
-#define WIFI_SCAN_PERIOD_DEFAULT 60
+#define WIFI_SCAN_PERIOD_DEFAULT 30
 
 /*
  * -----------------------------------------------------------------------------
@@ -115,11 +115,14 @@
 /*!
  * @brief ADR custom list and retransmission parameters for US915 region
  */
-#define CUSTOM_NB_TRANS_US915 1
+#define CUSTOM_NB_TRANS_US915 2 // 1 in code, 2 on README
 #define ADR_CUSTOM_LIST_US915                          \
     {                                                  \
-        3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1 \
-    } /* 125kHz - SF7, SF8, SF9 */
+        5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 3, 3 \
+    }
+    // {                                                  \
+    //     3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1 \
+    // } /* 125kHz - SF7, SF8, SF9 */
 
 /*!
  * @brief ADR custom list and retransmission parameters for WW2G4 region
@@ -263,6 +266,15 @@ int main( void )
     };
 
     lr11xx_system_clear_errors( &radio_context );
+    /* Check LR11XX Firmware version */
+    // ASSERT_SMTC_MODEM_RC( smtc_modem_suspend_before_user_radio_access( ) ); /* protect from radio access conflicts */
+    // status = lr11xx_system_get_version( modem_radio->ral.context, &lr11xx_fw_version );
+    
+    lr11xx_system_clear_errors( &radio_context );
+    status = lr11xx_system_get_version( &radio_context, &lr11xx_fw_version );
+    printf("Hardware Version: %u, 0x%04X\n", lr11xx_fw_version.hw, lr11xx_fw_version.hw);
+    printf("Type: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.type, lr11xx_fw_version.type, LR1110_FW_TYPE);
+    printf("Firmware Version: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.fw, lr11xx_fw_version.fw, LR1110_FW_VERSION);
 
     /* Initialise the ralf_t object corresponding to the board */
     modem_radio = smtc_board_initialise_and_get_ralf( );
@@ -288,16 +300,6 @@ int main( void )
     // HAL_DBG_TRACE_INFO( "###### ===== LoRa Basics Modem Geolocation Wi-Fi example ==== ######\n\n" );
     printf( "###### ===== LoRa Basics Modem Geolocation Wi-Fi example ==== ######\n\n" );
     apps_modem_common_display_lbm_version( );
-
-    /* Check LR11XX Firmware version */
-    // ASSERT_SMTC_MODEM_RC( smtc_modem_suspend_before_user_radio_access( ) ); /* protect from radio access conflicts */
-    // status = lr11xx_system_get_version( modem_radio->ral.context, &lr11xx_fw_version );
-    
-    lr11xx_system_clear_errors( &radio_context );
-    status = lr11xx_system_get_version( &radio_context, &lr11xx_fw_version );
-    printf("Hardware Version: %u, 0x%04X\n", lr11xx_fw_version.hw, lr11xx_fw_version.hw);
-    printf("Type: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.type, lr11xx_fw_version.type, LR1110_FW_TYPE);
-    printf("Firmware Version: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.fw, lr11xx_fw_version.fw, LR1110_FW_VERSION);
 
     // ASSERT_SMTC_MODEM_RC( smtc_modem_resume_after_user_radio_access( ) );
 
