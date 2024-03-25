@@ -445,7 +445,8 @@ static void on_middleware_wifi_event( uint8_t pending_events )
         wifi_mw_has_event( pending_events, WIFI_MW_EVENT_TERMINATED ) )
     {
         /* Program the next Wi-Fi group */
-        wifi_rc = wifi_mw_scan_start( WIFI_SCAN_PERIOD );
+        // wifi_rc = wifi_mw_scan_start( WIFI_SCAN_PERIOD );
+        wifi_rc = wifi_mw_scan_start( 1 );
         if( wifi_rc != MW_RC_OK )
         {
             printf( "Error! Failed to start WiFi scan\n" );

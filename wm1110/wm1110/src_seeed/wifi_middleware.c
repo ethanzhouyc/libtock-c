@@ -456,20 +456,20 @@ void wifi_mw_display_results( const wifi_mw_event_data_scan_done_t* data )
 {
     if( data != NULL )
     {
-        MW_DBG_TRACE_PRINTF( "SCAN_DONE info:\n" );
-        MW_DBG_TRACE_PRINTF( "-- number of results: %u\n", data->nbr_results );
-        MW_DBG_TRACE_PRINTF( "-- power consumption: %u uah\n", data->power_consumption_uah );
-        MW_DBG_TRACE_PRINTF( "-- timestamp: %u\n", data->timestamp );
+        printf( "SCAN_DONE info:\n" );
+        printf( "-- number of results: %u\n", data->nbr_results );
+        printf( "-- power consumption: %u uah\n", data->power_consumption_uah );
+        printf( "-- timestamp: %u\n", data->timestamp );
 
         for( uint8_t i = 0; i < data->nbr_results; i++ )
         {
             for( uint8_t j = 0; j < WIFI_AP_ADDRESS_SIZE; j++ )
             {
-                MW_DBG_TRACE_PRINTF( "%02X ", data->results[i].mac_address[j] );
+                printf( "%02X ", data->results[i].mac_address[j] );
             }
-            MW_DBG_TRACE_PRINTF( " -- Channel: %d", data->results[i].channel );
-            MW_DBG_TRACE_PRINTF( " -- Type: %d", data->results[i].type );
-            MW_DBG_TRACE_PRINTF( " -- RSSI: %d\n", data->results[i].rssi );
+            printf( " -- Channel: %d", data->results[i].channel );
+            printf( " -- Type: %d", data->results[i].type );
+            printf( " -- RSSI: %d\n", data->results[i].rssi );
         }
     }
 }
@@ -548,7 +548,7 @@ void wifi_mw_scan_rp_task_done( smtc_modem_rp_status_t* status )
 
     /* Save current time to restart task */
     time_ms = smtc_modem_hal_get_time_in_ms( );
-    WIFI_MW_TIME_CRITICAL_TRACE_PRINTF( "WIFI scan done at %d (irq_status=%d)\n", time_ms, irq_status );
+    printf( "WIFI scan done at %d (irq_status=%d)\n", time_ms, irq_status );
 
     /* WIFI scan completed or aborted - first thing to be done */
     smtc_wifi_scan_ended( );
@@ -605,6 +605,7 @@ void wifi_mw_scan_rp_task_done( smtc_modem_rp_status_t* status )
 
         if( scan_results_rc == true )
         {
+            printf("wifi_mw_send_event( WIFI_MW_EVENT_SCAN_DONE )\n");
             /* Scan has been completed, send an event to application */
             wifi_mw_send_event( WIFI_MW_EVENT_SCAN_DONE );
 
@@ -612,7 +613,7 @@ void wifi_mw_scan_rp_task_done( smtc_modem_rp_status_t* status )
             if( wifi_mw_send_results( ) == false )
             {
                 /* No more scan result to be sent, or failed to send packet */
-                WIFI_MW_TIME_CRITICAL_TRACE_PRINTF( "RP_TASK_WIFI: no scan result to be sent\n" );
+                printf( "RP_TASK_WIFI: no scan result to be sent\n" );
 
                 /* Send an event to application to notify for completion */
                 /* The application needs to know that it can proceed with the next scan */
@@ -648,6 +649,7 @@ void wifi_mw_scan_rp_task_done( smtc_modem_rp_status_t* status )
 
 static bool wifi_mw_send_results( void )
 {
+    printf("wifi_mw_send_results\n");
     uint8_t wifi_buffer_size = 0;
 
     /* Check if "no send "mode" is configured */

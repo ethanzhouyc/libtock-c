@@ -50,6 +50,8 @@
 #include "smtc_real_defs.h"
 #include "lorawan_api.h"
 
+#define TASK_EXTENDED_2
+
 #if defined( ADD_SMTC_ALC_SYNC )
 #include "alc_sync.h"
 #endif  // ADD_SMTC_ALC_SYNC

@@ -159,7 +159,9 @@ bool smtc_wifi_get_results( const void* radio_context, wifi_scan_all_result_t* w
     if( nb_results > max_nb_results )
     {
         MW_DBG_TRACE_ERROR( "Wi-Fi scan result size exceeds %u (%u)\n", max_nb_results, nb_results );
-        return false;
+        // return false;
+        nb_results = max_nb_results;
+        printf("try only print out 5 results\n");
     }
 
     status = lr11xx_wifi_read_basic_complete_results( radio_context, 0, nb_results, wifi_results_mac_addr );
