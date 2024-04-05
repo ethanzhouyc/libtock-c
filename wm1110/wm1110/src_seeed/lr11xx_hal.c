@@ -48,6 +48,8 @@
 //#include "smtc_hal_mcu.h"
 
 #include "lr11xx_hal_context.h"
+#include "lr11xx_system_types.h"
+#include "lr11xx_system.h"
 
 /*
  * -----------------------------------------------------------------------------
@@ -124,7 +126,6 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
     // Disable IRQ to secure LR11XX concurrent access
     modem_disable_irq( );
 
-
     uint8_t rbuffer[100];
     uint8_t wbuffer[100];
 
@@ -135,15 +136,27 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
 
     // printf("spi write: command 0x%02x 0x%02x\n", command[0], command[1]);
 
-
-
 #if defined( USE_LR11XX_CRC_OVER_SPI )
     // Send the CRC byte at the end of the transaction
     wbuffer[write_length] = cmd_crc;
     write_length += 1;
 #endif
 
+    if(command_length == 11) {
+        lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+
+        lr11xx_system_get_irq_status( lr11xx_context, &lr11xx_irq_mask );
+        printf("irq status at hal_write before read_write_sync: %d\n", lr11xx_irq_mask);
+    }
+
     lora_phy_read_write_sync((const char*)wbuffer, (const char*)rbuffer,  write_length);
+
+    if(command_length == 11) {
+        lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+
+        lr11xx_system_get_irq_status( lr11xx_context, &lr11xx_irq_mask );
+        printf("irq status at hal_write after read_write_sync: %d\n", lr11xx_irq_mask);
+    }
 
     // LR11XX_SYSTEM_SET_SLEEP_OC=0x011B opcode. In sleep mode the radio busy line is held at 1 => do not test it
     if( ( command[0] == 0x01 ) && ( command[1] == 0x1B ) )

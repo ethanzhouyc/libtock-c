@@ -92,12 +92,19 @@ void smtc_wifi_settings_init( const wifi_settings_t* wifi_settings )
 
 bool smtc_wifi_start_scan( const void* radio_context )
 {
+    printf("start of smtc_wifi_start_scan\n");
+    lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
     lr11xx_status_t status;
 
     if( mw_radio_configure_for_scan( radio_context ) == true )
     {
         status =
             lr11xx_system_set_dio_irq_params( radio_context, LR11XX_SYSTEM_IRQ_WIFI_SCAN_DONE, LR11XX_SYSTEM_IRQ_NONE );
+        
+        lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+        lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+        printf("irq status at start of smtc_wifi_start_scan: %d\n", lr11xx_irq_mask);
+
         if( status != LR11XX_STATUS_OK )
         {
             MW_DBG_TRACE_ERROR( "Failed to set Wi-Fi IRQ params\n" );
@@ -114,9 +121,22 @@ bool smtc_wifi_start_scan( const void* radio_context )
         /* Enable Wi-Fi path */
         mw_bsp_wifi_prescan_actions( );
 
+        lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+        lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+        printf("irq status for testing place 1: %d\n", lr11xx_irq_mask);
+
+        // above this line, irq is 0
+
         status = lr11xx_wifi_scan_time_limit( radio_context, settings.types, settings.channels,
                                               LR11XX_WIFI_SCAN_MODE_BEACON_AND_PKT, settings.max_results,
                                               settings.timeout_per_channel, settings.timeout_per_scan );
+        
+        // after this line, irq is rx_timeout and handled after finishing task done callback
+
+        lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+        lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+        printf("irq status for testing place 2: %d\n", lr11xx_irq_mask);
+
         if( status != LR11XX_STATUS_OK )
         {
             MW_DBG_TRACE_ERROR( "Failed to start Wi-Fi scan\n" );
@@ -129,6 +149,10 @@ bool smtc_wifi_start_scan( const void* radio_context )
         MW_DBG_TRACE_ERROR( "Failed to configure LR11XX for Wi-Fi scan\n" );
         return false;
     }
+
+    lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+    lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+    printf("irq status at end of smtc_wifi_start_scan: %d\n", lr11xx_irq_mask);
 
     return true;
 }

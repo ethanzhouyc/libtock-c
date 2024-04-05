@@ -353,6 +353,11 @@ static void on_modem_reset( uint16_t reset_count )
     /* Start the Join process */
     ASSERT_SMTC_MODEM_RC( smtc_modem_join_network( stack_id ) );
 
+    lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+
+    lr11xx_system_get_irq_status( &radio_context, &lr11xx_irq_mask );
+    printf("irq status after smtc join: %d\n", lr11xx_irq_mask);
+
     HAL_DBG_TRACE_INFO( "###### ===== JOINING ==== ######\n\n" );
 }
 
@@ -372,10 +377,15 @@ static void on_modem_network_joined( void )
                         mw_version.patch );
     wifi_mw_init( modem_radio, stack_id );
 
-    ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( 5 ) );
+    //ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( 5 ) );
+
+    lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+
+    lr11xx_system_get_irq_status( &radio_context, &lr11xx_irq_mask );
+    printf("irq status before start scan: %d\n", lr11xx_irq_mask);
 
     /* Start the Wi-Fi scan sequence */
-    wifi_rc = wifi_mw_scan_start( 0 );
+    wifi_rc = wifi_mw_scan_start( 1 );
     if( wifi_rc != MW_RC_OK )
     {
         printf( "Error: Failed to start WiFi scan\n" );
@@ -389,6 +399,7 @@ static void on_modem_alarm( void )
     ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( WIFI_SCAN_PERIOD ) );
     printf( "smtc_modem_alarm_start_timer: %d s\n\n", WIFI_SCAN_PERIOD );
 
+    // clear_before_start_new_scan();    
     // mw_return_code_t wifi_rc;
     // wifi_rc = wifi_mw_scan_start( 0 );
     // if( wifi_rc != MW_RC_OK )
@@ -445,12 +456,14 @@ static void on_middleware_wifi_event( uint8_t pending_events )
         wifi_mw_has_event( pending_events, WIFI_MW_EVENT_TERMINATED ) )
     {
         /* Program the next Wi-Fi group */
+        // smtc_modem_alarm_start_timer( 0 );
         // wifi_rc = wifi_mw_scan_start( WIFI_SCAN_PERIOD );
-        wifi_rc = wifi_mw_scan_start( 1 );
-        if( wifi_rc != MW_RC_OK )
-        {
-            printf( "Error! Failed to start WiFi scan\n" );
-        }
+        // clear_before_start_new_scan();
+        // wifi_rc = wifi_mw_scan_start( 0 );
+        // if( wifi_rc != MW_RC_OK )
+        // {
+        //     printf( "Error! Failed to start WiFi scan\n" );
+        // }
     }
 
     wifi_mw_clear_pending_events( );

@@ -225,6 +225,8 @@ void wifi_mw_set_payload_format( wifi_mw_payload_format_t format );
  */
 void wifi_mw_display_results( const wifi_mw_event_data_scan_done_t* data );
 
+void clear_before_start_new_scan( void );
+
 #ifdef __cplusplus
 }
 #endif

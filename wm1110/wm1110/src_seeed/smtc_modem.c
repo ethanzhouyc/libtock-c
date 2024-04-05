@@ -50,7 +50,7 @@
 #include "smtc_real_defs.h"
 #include "lorawan_api.h"
 
-#define TASK_EXTENDED_2
+
 
 #if defined( ADD_SMTC_ALC_SYNC )
 #include "alc_sync.h"
@@ -836,6 +836,7 @@ smtc_modem_return_code_t smtc_modem_alarm_start_timer( uint32_t alarm_s )
 
     smtc_modem_return_code_t return_code = SMTC_MODEM_RC_OK;
     modem_set_user_alarm( ( alarm_s > 0 ) ? ( smtc_modem_hal_get_time_in_s( ) + alarm_s ) : 0 );
+    printf("smtc_modem_alarm_start_timer: %d\n", alarm_s);
     return return_code;
 }
 
@@ -1674,7 +1675,7 @@ smtc_modem_return_code_t smtc_modem_request_extended_uplink( uint8_t stack_id, u
                                                              const uint8_t* payload, uint8_t payload_length,
                                                              uint8_t extended_uplink_id,
                                                              void ( *lbm_notification_callback )( void ) )
-{
+{  
     UNUSED( stack_id );
     RETURN_BUSY_IF_TEST_MODE( );
     RETURN_INVALID_IF_NULL( payload );
@@ -2224,6 +2225,13 @@ smtc_modem_return_code_t smtc_modem_rp_add_user_radio_access_task( smtc_modem_rp
                                                                                               : RP_TASK_STATE_ASAP,
                               .schedule_task_low_priority = false,
                               .start_time_ms              = rp_task->start_time_ms };
+    
+    // set and pass RP_TASK_TYPE_WIFI_RSSI task type if current task id is SMTC_MODEM_RP_TASK_ID2 (a WIFI task)
+    if (rp_task->id == SMTC_MODEM_RP_TASK_ID2) {
+        rp_task_tmp.type = RP_TASK_TYPE_WIFI_RSSI;
+    } else {
+        rp_task_tmp.type = RP_TASK_TYPE_NONE;
+    }
 
     rp_hook_status_t status = rp_task_enqueue( &modem_radio_planner, &rp_task_tmp, NULL, 0, &fake_radio_params );
 

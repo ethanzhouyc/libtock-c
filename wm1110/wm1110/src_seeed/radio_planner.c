@@ -43,6 +43,8 @@
 // Private planner utilities declaration
 //
 
+rp_task_types_t rp_task_type = RP_TASK_TYPE_NONE;
+
 /**
  * @brief rp_task_free to free a task
  *
@@ -263,6 +265,12 @@ rp_hook_status_t rp_hook_get_id( const radio_planner_t* rp, const void* hook, ui
 rp_hook_status_t rp_task_enqueue( radio_planner_t* rp, const rp_task_t* task, uint8_t* payload, uint16_t payload_size,
                                   const rp_radio_params_t* radio_params )
 {
+    if(task->type == RP_TASK_TYPE_WIFI_RSSI) {
+        rp_task_type = RP_TASK_TYPE_WIFI_RSSI;
+    } else {
+        rp_task_type = RP_TASK_TYPE_NONE;
+    }
+    
     uint8_t hook_id = task->hook_id;
     if( hook_id >= RP_NB_HOOKS )
     {
@@ -640,7 +648,15 @@ static void rp_irq_get_status( radio_planner_t* rp, const uint8_t hook_id )
     else if( ( radio_irq & RAL_IRQ_RX_TIMEOUT ) == RAL_IRQ_RX_TIMEOUT )
     {
         printf("irq status is: RP_STATUS_RX_TIMEOUT\n");
-        rp->status[hook_id] = RP_STATUS_RX_TIMEOUT;
+        if(radio_irq == 520 && rp_task_type == RP_TASK_TYPE_WIFI_RSSI) {
+            // rp->status[hook_id] = RP_STATUS_WIFI_SCAN_DONE;
+            // printf("irq is 520 (RX_TIMEOUT & CAD_DETECTED bits set");
+            // printf(", and rp_task_type is WIFI_SCAN_RSSI\n");
+            // printf("status set to WIFI_SCAN_DONE instead\n");
+            rp->status[hook_id] = RP_STATUS_RX_TIMEOUT;
+        } else {
+            rp->status[hook_id] = RP_STATUS_RX_TIMEOUT;
+        }
     }
     else if( ( radio_irq & RAL_IRQ_RX_DONE ) == RAL_IRQ_RX_DONE )
     {
