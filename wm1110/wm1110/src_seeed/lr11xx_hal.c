@@ -142,21 +142,21 @@ lr11xx_hal_status_t lr11xx_hal_write( const void* context, const uint8_t* comman
     write_length += 1;
 #endif
 
-    if(command_length == 11) {
-        lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+    // if(command_length == 11) {
+    //     lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
 
-        lr11xx_system_get_irq_status( lr11xx_context, &lr11xx_irq_mask );
-        printf("irq status at hal_write before read_write_sync: %d\n", lr11xx_irq_mask);
-    }
+    //     lr11xx_system_get_irq_status( lr11xx_context, &lr11xx_irq_mask );
+    //     printf("irq status at hal_write before read_write_sync: %d\n", lr11xx_irq_mask);
+    // }
 
     lora_phy_read_write_sync((const char*)wbuffer, (const char*)rbuffer,  write_length);
 
-    if(command_length == 11) {
-        lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+    // if(command_length == 11) {
+    //     lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
 
-        lr11xx_system_get_irq_status( lr11xx_context, &lr11xx_irq_mask );
-        printf("irq status at hal_write after read_write_sync: %d\n", lr11xx_irq_mask);
-    }
+    //     lr11xx_system_get_irq_status( lr11xx_context, &lr11xx_irq_mask );
+    //     printf("irq status at hal_write after read_write_sync: %d\n", lr11xx_irq_mask);
+    // }
 
     // LR11XX_SYSTEM_SET_SLEEP_OC=0x011B opcode. In sleep mode the radio busy line is held at 1 => do not test it
     if( ( command[0] == 0x01 ) && ( command[1] == 0x1B ) )

@@ -178,16 +178,16 @@ lr11xx_status_t lr11xx_system_get_status( const void* context, lr11xx_system_sta
             // printf("Stat2 - Chip Mode: %d\n", stat2->chip_mode);
             //printf("Stat2: %d\n", data[1]);
             
-            printf("IRQ Status (binary): ");
-            for (int i = 31; i >= 0; i--)
-            {
-                printf("%d", (*irq_status >> i) & 1);
-                if (i % 8 == 0 && i != 0)
-                {
-                    printf(" ");
-                }
-            }
-            printf("\n");
+            // printf("IRQ Status (binary): ");
+            // for (int i = 31; i >= 0; i--)
+            // {
+            //     printf("%d", (*irq_status >> i) & 1);
+            //     if (i % 8 == 0 && i != 0)
+            //     {
+            //         printf(" ");
+            //     }
+            // }
+            // printf("\n");
 
             // printf("IRQ Status (decimal): %u\n", *irq_status);
         }

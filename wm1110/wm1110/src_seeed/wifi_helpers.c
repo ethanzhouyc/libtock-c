@@ -92,7 +92,7 @@ void smtc_wifi_settings_init( const wifi_settings_t* wifi_settings )
 
 bool smtc_wifi_start_scan( const void* radio_context )
 {
-    printf("start of smtc_wifi_start_scan\n");
+    // printf("start of smtc_wifi_start_scan\n");
     lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
     lr11xx_status_t status;
 
@@ -101,9 +101,9 @@ bool smtc_wifi_start_scan( const void* radio_context )
         status =
             lr11xx_system_set_dio_irq_params( radio_context, LR11XX_SYSTEM_IRQ_WIFI_SCAN_DONE, LR11XX_SYSTEM_IRQ_NONE );
         
-        lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
-        lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
-        printf("irq status at start of smtc_wifi_start_scan: %d\n", lr11xx_irq_mask);
+        // lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+        // lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+        // printf("irq status at start of smtc_wifi_start_scan: %d\n", lr11xx_irq_mask);
 
         if( status != LR11XX_STATUS_OK )
         {
@@ -121,9 +121,9 @@ bool smtc_wifi_start_scan( const void* radio_context )
         /* Enable Wi-Fi path */
         mw_bsp_wifi_prescan_actions( );
 
-        lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
-        lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
-        printf("irq status for testing place 1: %d\n", lr11xx_irq_mask);
+        // lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+        // lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+        // printf("irq status for testing place 1: %d\n", lr11xx_irq_mask);
 
         // above this line, irq is 0
 
@@ -133,9 +133,9 @@ bool smtc_wifi_start_scan( const void* radio_context )
         
         // after this line, irq is rx_timeout and handled after finishing task done callback
 
-        lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
-        lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
-        printf("irq status for testing place 2: %d\n", lr11xx_irq_mask);
+        // lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+        // lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+        // printf("irq status for testing place 2: %d\n", lr11xx_irq_mask);
 
         if( status != LR11XX_STATUS_OK )
         {
@@ -150,9 +150,9 @@ bool smtc_wifi_start_scan( const void* radio_context )
         return false;
     }
 
-    lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
-    lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
-    printf("irq status at end of smtc_wifi_start_scan: %d\n", lr11xx_irq_mask);
+    // lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+    // lr11xx_system_get_irq_status( radio_context, &lr11xx_irq_mask );
+    // printf("irq status at end of smtc_wifi_start_scan: %d\n", lr11xx_irq_mask);
 
     return true;
 }
@@ -182,10 +182,10 @@ bool smtc_wifi_get_results( const void* radio_context, wifi_scan_all_result_t* w
     max_nb_results = sizeof( wifi_results_mac_addr ) / sizeof( wifi_results_mac_addr[0] );
     if( nb_results > max_nb_results )
     {
-        MW_DBG_TRACE_ERROR( "Wi-Fi scan result size exceeds %u (%u)\n", max_nb_results, nb_results );
+        // MW_DBG_TRACE_ERROR( "Wi-Fi scan result size exceeds %u (%u)\n", max_nb_results, nb_results );
         // return false;
         nb_results = max_nb_results;
-        printf("try only print out 5 results\n");
+        // printf("try only print out 5 results\n");
     }
 
     status = lr11xx_wifi_read_basic_complete_results( radio_context, 0, nb_results, wifi_results_mac_addr );

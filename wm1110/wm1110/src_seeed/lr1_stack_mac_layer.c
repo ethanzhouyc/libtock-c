@@ -649,7 +649,7 @@ void lr1_stack_mac_rp_callback( lr1_stack_mac_t* lr1_mac )
         break;
 
     case RP_STATUS_RX_TIMEOUT: {
-        printf("RP_STATUS_RX_TIMEOUT lr1_stack_mac_layer.c\n");
+        // printf("RP_STATUS_RX_TIMEOUT lr1_stack_mac_layer.c\n");
 #ifndef BSP_LR1MAC_DISABLE_FINE_TUNE
         uint32_t rx_timestamp_calibration = tcurrent_ms;
         uint32_t rx_delay_ms;

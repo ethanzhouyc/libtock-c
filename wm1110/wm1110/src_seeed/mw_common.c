@@ -148,7 +148,7 @@ uint32_t mw_get_gps_time( void )
     case SMTC_MODEM_RC_OK:
         return gps_time_s;
     case SMTC_MODEM_RC_NO_TIME:
-        MW_DBG_TRACE_WARNING( "No time available.\n" );
+        // MW_DBG_TRACE_WARNING( "No time available.\n" );
         return 0;
     default:
         MW_DBG_TRACE_ERROR( "Failed to get time from modem\n" );

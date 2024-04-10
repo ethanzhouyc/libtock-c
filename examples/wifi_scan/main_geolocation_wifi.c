@@ -272,9 +272,9 @@ int main( void )
     
     lr11xx_system_clear_errors( &radio_context );
     status = lr11xx_system_get_version( &radio_context, &lr11xx_fw_version );
-    printf("Hardware Version: %u, 0x%04X\n", lr11xx_fw_version.hw, lr11xx_fw_version.hw);
-    printf("Type: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.type, lr11xx_fw_version.type, LR1110_FW_TYPE);
-    printf("Firmware Version: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.fw, lr11xx_fw_version.fw, LR1110_FW_VERSION);
+    // printf("Hardware Version: %u, 0x%04X\n", lr11xx_fw_version.hw, lr11xx_fw_version.hw);
+    // printf("Type: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.type, lr11xx_fw_version.type, LR1110_FW_TYPE);
+    // printf("Firmware Version: %u, 0x%04X, should be 0x%04X\n", lr11xx_fw_version.fw, lr11xx_fw_version.fw, LR1110_FW_VERSION);
 
     /* Initialise the ralf_t object corresponding to the board */
     modem_radio = smtc_board_initialise_and_get_ralf( );
@@ -320,7 +320,7 @@ int main( void )
     lr11xx_system_clear_errors( &radio_context );
     lr11xx_system_clear_irq_status(&radio_context, 0xFFFFFFFF);
 
-    printf("inside loop\n");
+    // printf("inside loop\n");
 
     while( 1 )
     {
@@ -345,7 +345,7 @@ int main( void )
 
 static void on_modem_reset( uint16_t reset_count )
 {
-    printf("on_modem_reset\n");
+    // printf("on_modem_reset\n");
     
     /* Basic LoRaWAN configuration */
     apps_modem_common_configure_lorawan_params( stack_id );
@@ -353,10 +353,10 @@ static void on_modem_reset( uint16_t reset_count )
     /* Start the Join process */
     ASSERT_SMTC_MODEM_RC( smtc_modem_join_network( stack_id ) );
 
-    lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+    // lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
 
-    lr11xx_system_get_irq_status( &radio_context, &lr11xx_irq_mask );
-    printf("irq status after smtc join: %d\n", lr11xx_irq_mask);
+    // lr11xx_system_get_irq_status( &radio_context, &lr11xx_irq_mask );
+    // printf("irq status after smtc join: %d\n", lr11xx_irq_mask);
 
     HAL_DBG_TRACE_INFO( "###### ===== JOINING ==== ######\n\n" );
 }
@@ -373,18 +373,20 @@ static void on_modem_network_joined( void )
 
     /* Initialize Wi-Fi middleware */
     wifi_mw_get_version( &mw_version );
-    printf( "Initializing Wi-Fi middleware v%d.%d.%d\n", mw_version.major, mw_version.minor,
-                        mw_version.patch );
+    // printf( "Initializing Wi-Fi middleware v%d.%d.%d\n", mw_version.major, mw_version.minor,
+                        // mw_version.patch );
     wifi_mw_init( modem_radio, stack_id );
 
-    //ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( 5 ) );
+    ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( 5 ) );
 
-    lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
+    // lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
 
-    lr11xx_system_get_irq_status( &radio_context, &lr11xx_irq_mask );
-    printf("irq status before start scan: %d\n", lr11xx_irq_mask);
+    // lr11xx_system_get_irq_status( &radio_context, &lr11xx_irq_mask );
+    // printf("irq status before start scan: %d\n", lr11xx_irq_mask);
 
     /* Start the Wi-Fi scan sequence */
+    //smtc_modem_suspend_before_user_radio_access( );
+
     wifi_rc = wifi_mw_scan_start( 1 );
     if( wifi_rc != MW_RC_OK )
     {
@@ -394,14 +396,15 @@ static void on_modem_network_joined( void )
 
 static void on_modem_alarm( void )
 {
-    printf("on_modem_alarm\n");
+    //printf("on_modem_alarm\n");
+    //wifi_mw_scan_rp_task_done();
 
-    ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( WIFI_SCAN_PERIOD ) );
-    printf( "smtc_modem_alarm_start_timer: %d s\n\n", WIFI_SCAN_PERIOD );
+    //ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( WIFI_SCAN_PERIOD ) );
+    // printf( "smtc_modem_alarm_start_timer: %d s\n\n", WIFI_SCAN_PERIOD );
 
     // clear_before_start_new_scan();    
     // mw_return_code_t wifi_rc;
-    // wifi_rc = wifi_mw_scan_start( 0 );
+    // wifi_rc = wifi_mw_scan_start( 5 );
     // if( wifi_rc != MW_RC_OK )
     // {
     //     HAL_DBG_TRACE_ERROR( "Failed to start WiFi scan\n" );
@@ -419,14 +422,14 @@ static void on_modem_join_fail( void )
 
 static void on_middleware_wifi_event( uint8_t pending_events )
 {
-    printf("on_middleware_wifi_event\n");
+    // printf("on_middleware_wifi_event\n");
 
     mw_return_code_t wifi_rc;
 
     /* Parse events */
     if( wifi_mw_has_event( pending_events, WIFI_MW_EVENT_SCAN_DONE ) )
     {
-        printf( "Wi-Fi middleware event - SCAN DONE\n" );
+        // printf( "Wi-Fi middleware event - SCAN DONE\n" );
         wifi_mw_get_event_data_scan_done( &wifi_results );
         wifi_mw_display_results( &wifi_results );
     }
@@ -435,7 +438,7 @@ static void on_middleware_wifi_event( uint8_t pending_events )
     {
         wifi_mw_event_data_terminated_t event_data;
 
-        printf( "Wi-Fi middleware event - TERMINATED\n" );
+        // printf( "Wi-Fi middleware event - TERMINATED\n" );
         wifi_mw_get_event_data_terminated( &event_data );
         // HAL_DBG_TRACE_PRINTF( "TERMINATED info:\n" );
         printf( "-- number of scans sent: %u\n", event_data.nb_scans_sent );
@@ -456,8 +459,9 @@ static void on_middleware_wifi_event( uint8_t pending_events )
         wifi_mw_has_event( pending_events, WIFI_MW_EVENT_TERMINATED ) )
     {
         /* Program the next Wi-Fi group */
-        // smtc_modem_alarm_start_timer( 0 );
         // wifi_rc = wifi_mw_scan_start( WIFI_SCAN_PERIOD );
+        //printf("receive unknown error\n");
+        //smtc_modem_alarm_start_timer( 1 );
         // clear_before_start_new_scan();
         // wifi_rc = wifi_mw_scan_start( 0 );
         // if( wifi_rc != MW_RC_OK )
@@ -471,13 +475,13 @@ static void on_middleware_wifi_event( uint8_t pending_events )
 
 void configure_adr( void )
 {
-    printf("configure_adr\n");
+    // printf("configure_adr\n");
 
     smtc_modem_region_t region;
 
     ASSERT_SMTC_MODEM_RC( smtc_modem_get_region( stack_id, &region ) );
 
-    printf("Region number: %d\n", region);
+    // printf("Region number: %d\n", region);
 
     /* Set the ADR profile once joined */
     switch( region )
@@ -517,7 +521,7 @@ void configure_adr( void )
 
 void apps_modem_common_configure_lorawan_params( uint8_t stack_id )
 {
-    printf("apps_modem_common_configure_lorawan_params\n");
+    // printf("apps_modem_common_configure_lorawan_params\n");
 
     smtc_modem_return_code_t rc = SMTC_MODEM_RC_OK;
     uint8_t dev_eui[8] = { 0 };
