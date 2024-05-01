@@ -213,7 +213,7 @@ static uint8_t lorawan_port = WIFI_DEFAULT_UPLINK_PORT;
 /*!
  * @brief The format of the Wi-Fi scan results to be used.
  */
-static wifi_mw_payload_format_t payload_format = WIFI_MW_PAYLOAD_MAC;
+static wifi_mw_payload_format_t payload_format = WIFI_MW_PAYLOAD_MAC_RSSI;
 
 /*
  * -----------------------------------------------------------------------------
@@ -530,12 +530,14 @@ void wifi_mw_clear_pending_events( void ) { pending_events = 0; }
 
 static void wifi_mw_scan_rp_task_launch( void* context )
 {
-    //printf("start of task launch irq\n");
+    // printf("start of task launch irq\n");
 
     // lr11xx_system_irq_mask_t lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
 
     // lr11xx_system_get_irq_status( &lr1110_context, &lr11xx_irq_mask );
     // printf("irq status at start of task launch: %d\n", lr11xx_irq_mask);
+
+    delay_ms(700);
 
     // lr11xx_status_t status = lr11xx_system_clear_irq_status(modem_radio_ctx->ral.context, 0xFFFFFFFF);
     // printf("status of clear: %d\n", status);
@@ -681,7 +683,7 @@ void wifi_mw_scan_rp_task_done( smtc_modem_rp_status_t* status )
 
     /* Monitor callback exec duration (should be kept as low as possible) */
     meas_time = smtc_modem_hal_get_time_in_ms( );
-    MW_DBG_TRACE_WARNING( "WIFI RP task - done callback duration %u ms\n", meas_time - time_ms );
+    // MW_DBG_TRACE_WARNING( "WIFI RP task - done callback duration %u ms\n", meas_time - time_ms );
 
     // lr11xx_irq_mask = LR11XX_SYSTEM_IRQ_NONE;
 

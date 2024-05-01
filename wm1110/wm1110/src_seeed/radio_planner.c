@@ -402,9 +402,12 @@ void rp_radio_irq( radio_planner_t* rp )
         SMTC_MODEM_HAL_RP_TRACE_PRINTF( " RP: INFO - Radio IRQ received for hook #%u\n", rp->radio_task_id );
 
         rp_irq_get_status( rp, rp->radio_task_id );
-        if( rp_task_type == RP_TASK_TYPE_WIFI_RSSI && rp->status[rp->radio_task_id] == RP_STATUS_RX_TIMEOUT) {
-            // printf("ignore irq in radio planner\n");
-            return;
+        if( rp_task_type == RP_TASK_TYPE_WIFI_RSSI) {
+            if(rp->status[rp->radio_task_id] == RP_STATUS_RX_TIMEOUT) {
+                printf("ignore irq in radio planner\n");
+                rp_irq_get_status( rp, rp->radio_task_id );
+                // return;
+            }
         }
         if( rp->status[rp->radio_task_id] == RP_STATUS_LR_FHSS_HOP )
         {
@@ -695,7 +698,6 @@ static void rp_irq_get_status( radio_planner_t* rp, const uint8_t hook_id )
     }
     else if( ( radio_irq & RAL_IRQ_WIFI_SCAN_DONE ) == RAL_IRQ_WIFI_SCAN_DONE )
     {
-        //printf("irq status is: RP_STATUS_WIFI_SCAN_DONE\n");
         rp->status[hook_id] = RP_STATUS_WIFI_SCAN_DONE;
     }
     else if( ( radio_irq & RAL_IRQ_GNSS_SCAN_DONE ) == RAL_IRQ_GNSS_SCAN_DONE )
