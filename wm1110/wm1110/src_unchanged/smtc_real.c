@@ -78,7 +78,7 @@
 #if !defined( REGION_WW2G4 ) && !defined( REGION_EU_868 ) && !defined( REGION_AS_923 ) && !defined( REGION_US_915 ) && \
     !defined( REGION_AU_915 ) && !defined( REGION_CN_470 ) && !defined( REGION_CN_470_RP_1_0 ) &&                      \
     !defined( REGION_IN_865 ) && !defined( REGION_KR_920 ) && !defined( REGION_RU_864 )
-//#error "Unknown region selected..."
+#error "Unknown region selected..."
 #endif
 
 #define tx_frequency_channel_ctx lr1_mac->real->real_ctx.tx_frequency_channel_ctx
@@ -2785,11 +2785,6 @@ status_lorawan_t smtc_real_is_tx_power_valid( lr1_stack_mac_t* lr1_mac, uint8_t 
     }
     return ( status );
 }
-
-#define RP_VERSION_REVISION ( 2 )
-#define RP_VERSION_MAJOR ( 1 )
-#define RP_VERSION_MINOR ( 0 )
-#define RP_VERSION_PATCH ( 1 )
 
 lr1mac_version_t smtc_real_get_regional_parameters_version( void )
 {

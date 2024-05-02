@@ -248,8 +248,8 @@ void modem_supervisor_init( void ( *callback )( void ), radio_planner_t* rp,
     certification_data_is_pending = false;
     class_b_bit                   = false;
 
-    lorawan_api_init( rp ); // no return??
-    lorawan_api_dr_strategy_set( STATIC_ADR_MODE ); // cause process fault
+    lorawan_api_init( rp );
+    lorawan_api_dr_strategy_set( STATIC_ADR_MODE );
     lorawan_api_join_status_clear( );
 
     modem_context_init( );

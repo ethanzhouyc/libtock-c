@@ -376,7 +376,6 @@ void lr1mac_class_c_mac_rp_callback( lr1mac_class_c_t* class_c_obj )
         break;
 
     case RP_STATUS_RX_TIMEOUT:
-        printf("lr1mac RxC Timeout \n");
         SMTC_MODEM_HAL_TRACE_PRINTF( "lr1mac RxC Timeout \n" );
         break;
     case RP_STATUS_TASK_ABORTED:

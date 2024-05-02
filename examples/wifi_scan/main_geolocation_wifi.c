@@ -401,8 +401,7 @@ static void on_modem_alarm( void )
 
     //ASSERT_SMTC_MODEM_RC( smtc_modem_alarm_start_timer( WIFI_SCAN_PERIOD ) );
     // printf( "smtc_modem_alarm_start_timer: %d s\n\n", WIFI_SCAN_PERIOD );
-
-    // clear_before_start_new_scan();    
+ 
     // mw_return_code_t wifi_rc;
     // wifi_rc = wifi_mw_scan_start( 5 );
     // if( wifi_rc != MW_RC_OK )
@@ -462,7 +461,6 @@ static void on_middleware_wifi_event( uint8_t pending_events )
         // wifi_rc = wifi_mw_scan_start( WIFI_SCAN_PERIOD );
         //printf("receive unknown error\n");
         //smtc_modem_alarm_start_timer( 1 );
-        // clear_before_start_new_scan();
         // wifi_rc = wifi_mw_scan_start( 0 );
         // if( wifi_rc != MW_RC_OK )
         // {

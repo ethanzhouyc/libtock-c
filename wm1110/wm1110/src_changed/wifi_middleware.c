@@ -812,14 +812,4 @@ static void wifi_mw_send_event( wifi_mw_event_type_t event_type )
     MW_ASSERT_SMTC_MODEM_RC( smtc_modem_increment_event_middleware( SMTC_MODEM_EVENT_MIDDLEWARE_2, pending_events ) );
 }
 
-void clear_before_start_new_scan( void ) {
-    // printf("clear before start new\n");
-    // lr11xx_system_clear_errors( &lr1110_context );
-    // lr11xx_system_clear_irq_status(&lr1110_context, 0xFFFFFFFF);
-    smtc_modem_return_code_t modem_rc;
-    task_running = false;
-    modem_rc = smtc_modem_rp_abort_user_radio_access_task( RP_TASK_WIFI );
-    // printf("task running is %d\n", task_running);
-}
-
 /* --- EOF ------------------------------------------------------------------ */

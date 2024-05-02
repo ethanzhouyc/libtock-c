@@ -129,7 +129,7 @@ void lorawan_api_init( radio_planner_t* rp )
 #elif defined( REGION_WW2G4 )
     smtc_real_region_types = SMTC_REAL_REGION_WW2G4;
 #else
-//#error "Please select supported region"
+#error "Please select supported region"
 #endif
 
     // init lr1mac core
