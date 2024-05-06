@@ -20,23 +20,6 @@ $(ZIP_FILE):
 	rmdir $(EXTRACTED_DIR)  # move unzipped code to SEEED_DIR, remove original directory
 	touch $(SEEED_DIR)
 
-	mkdir -p $(SRC_UNCHANGED)
-	@find $(SEEED_DIR) -type f -name '*.c' -print | while read -r file; do \
-		basename=$$(basename "$$file"); \
-		if grep -q -w "$$basename" $(UNCHANGED_C_FILES); then \
-			mv "$$file" $(SRC_UNCHANGED)/; \
-		fi; \
-	done
-
-	mkdir -p $(INC_UNCHANGED)
-	@find $(SEEED_DIR) -type f -name '*.h' -print | while read -r file; do \
-		basename=$$(basename "$$file"); \
-		if grep -q -w "$$basename" $(UNCHANGED_H_FILES); then \
-			mv "$$file" $(INC_UNCHANGED)/; \
-		fi; \
-	done
-
-	rm -r $(SEEED_DIR)
   
 	
 	
