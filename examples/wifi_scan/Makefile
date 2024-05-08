@@ -5,10 +5,11 @@ TOCK_USERLAND_BASE_DIR = ../..
 
 # External libraries used
 EXTERN_LIBS += $(TOCK_USERLAND_BASE_DIR)/wm1110
+WM1110_DIR = $(TOCK_USERLAND_BASE_DIR)/wm1110/wm1110
 
 override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110
-override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110/wm1110/include
-override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110/wm1110/include_tock/include
+override CFLAGS += -I$(WM1110_DIR)/include_seeed/include
+override CFLAGS += -I$(WM1110_DIR)/include_tock/include
 
 $(info CFLAGS_in_examples: $(CFLAGS))
 
