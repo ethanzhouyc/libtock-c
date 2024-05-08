@@ -7,8 +7,10 @@ TOCK_USERLAND_BASE_DIR = ../..
 EXTERN_LIBS += $(TOCK_USERLAND_BASE_DIR)/wm1110
 
 override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110
-override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110/wm1110/include_tock
+override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110/wm1110/include
 override CFLAGS += -I$(TOCK_USERLAND_BASE_DIR)/wm1110/wm1110/include_tock/include
+
+$(info CFLAGS_in_examples: $(CFLAGS))
 
 # Which files to compile.
 C_SRCS += $(wildcard *.c)
